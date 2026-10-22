@@ -1,4 +1,5 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -45,7 +46,9 @@
 			class="navbar navbar-expand-lg sticky-top mb-4 bg-secondary-subtle bg-gradient rounded">
 			<div class="container-fluid">
 				<ul class="navbar-nav">
-					<li class="navbar-brand"><i class="bi bi-person-fill"></i> <span>nom del usuari que ha fet login</span></li>
+					<li class="navbar-brand"><i class="bi bi-person-fill"></i> <span><c:if test="${not empty pageContext.request.remoteUser}">
+		${pageContext.request.remoteUser}
+	</c:if></span></li>
 				</ul>
 				<ul class="navbar-nav">
 					<li class="nav-item"><a class="nav-link" href="/logout"
