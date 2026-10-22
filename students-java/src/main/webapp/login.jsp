@@ -72,7 +72,7 @@
 							</div>
 							<div class="card-footer bg-secondary-subtle">
 								<input class="btn btn-light btn-outline-secondary col-12"
-									type="submit" value="Login">
+									type="submit" value="Submit">
 							</div>
 						</div>
 					</div>
