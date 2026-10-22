@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 //TODO Implement the servlet to handle login errors
-@WebServlet({ "/loginerror" })
+@WebServlet({ "/students-java/j_security_check" })
 public class LoginErrorServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -31,5 +31,6 @@ public class LoginErrorServlet extends HttpServlet {
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + prepareMethod);
 		}
+		response.sendRedirect("");
 	}
 }

@@ -1,7 +1,9 @@
 package cat.institutmarianao.servlet;
 
 import java.io.IOException;
+import java.util.List;
 
+import cat.institutmarianao.model.Student;
 import cat.institutmarianao.service.StudentService;
 import jakarta.ejb.EJB;
 import jakarta.servlet.RequestDispatcher;
@@ -35,7 +37,12 @@ public class StudentsServlet extends HttpServlet {
 			throws IOException, ServletException {
 
 		if (request.isUserInRole("admin")) {
-
+			try {
+				List<Student> listadealumnos = student.findAll();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher("students.jsp");

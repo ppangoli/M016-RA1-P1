@@ -46,7 +46,7 @@
 				<div class="row justify-content-center overflow-hidden">
 					<div class="col-sm-9 col-md-7 col-lg-5 col-xl-4">
 
-						<div class="card">
+						<div class="card" name="oculto">
 							<div class="card-header bg-secondary-subtle">
 								<h5 class="card-title mb-0">Please, enter your credentials
 								</h5>

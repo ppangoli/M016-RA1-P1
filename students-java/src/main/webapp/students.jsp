@@ -121,6 +121,18 @@
 						<th>Modules</th>
 						<th>Actions</th>
 					</tr>
+					
+ <c:if test="${not empty listadealumnos}">
+    <c:forEach items="${listadealumnos}" var="alumno">
+        <tr>
+            <td>${alumno.dni}</td>
+            <td>${alumno.name}</td>
+            <td>${alumno.surname}</td>
+            <td>${alumno.email}</td>
+        </tr>
+    </c:forEach>
+</c:if>
+					
 				</thead>
 				<tbody>
 					
