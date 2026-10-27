@@ -33,7 +33,7 @@ public class RegisterServlet extends HttpServlet {
 		try {
 			// lista de todos los ciclos disponibles
 			List<Cycle> listaDeCiclos = cycle.findAll();
-			Map<String, Map<String, Module>> modules = module.findAll();
+			Map<String, Map<String, Module>> modules = module.findByPk(cicle, cicle)
 			Cycle cicloselect;
 			if (cicle.equalsIgnoreCase("asix")) {
 				
