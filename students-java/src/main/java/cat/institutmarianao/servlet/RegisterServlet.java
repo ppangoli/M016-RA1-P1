@@ -1,8 +1,8 @@
 package cat.institutmarianao.servlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import cat.institutmarianao.dao.CycleDao;
 import cat.institutmarianao.dao.ModuleDao;
@@ -10,6 +10,7 @@ import cat.institutmarianao.dao.StudentDao;
 import cat.institutmarianao.model.Cycle;
 import cat.institutmarianao.model.Module;
 import cat.institutmarianao.model.Student;
+import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -17,6 +18,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 
 //TODO Implement the servlet to handle student registration, including form validation
 @WebServlet(urlPatterns = { "/register" })
@@ -28,6 +31,11 @@ public class RegisterServlet extends HttpServlet {
 	private ModuleDao module;
 	@EJB
 	private StudentDao student;
+
+	@Resource
+	private Validator validator;
+
+	private Student postBean;
 
 	private List<Module> listaModulosEnBaseAlCiclo(String ciclorequest) throws Exception {
 		List<Cycle> listaDeCiclos = cycle.findAll();
@@ -71,15 +79,21 @@ public class RegisterServlet extends HttpServlet {
 		String name = request.getParameter("name");
 		String surname = request.getParameter("surname");
 		String email = request.getParameter("email");
+		String[] modulos = request.getParameterValues("modules");
 
 		Student estudiante = new Student();
 		estudiante.setDni(dni);
-		estudiante.setName(surname);
+		estudiante.setName(name);
 		estudiante.setSurname(surname);
 		estudiante.setEmail(email);
-		estudiante.setModules(null);
+		estudiante.setModules(modulos);
 
-		List<String> errors = validarStudent(estudiante);
+		postBean.setDni(dni);
+		postBean.setName(name);
+		postBean.setSurname(surname);
+		postBean.setEmail(email);
+
+		Set<ConstraintViolation<Student>> errors = validator.validate(postBean);
 
 		RequestDispatcher dispatcher;
 		if (errors.isEmpty()) {
@@ -100,13 +114,5 @@ public class RegisterServlet extends HttpServlet {
 		}
 
 		dispatcher.forward(request, response);
-	}
-
-	private List<String> validarStudent(Student student) {
-		List<String> errores = new ArrayList<>();
-		if (student.getDni().isBlank()) {
-			errores.add("El camp dni esta vuit");
-		}
-		return errores;
 	}
 }
