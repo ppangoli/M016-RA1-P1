@@ -1,12 +1,16 @@
 package cat.institutmarianao.servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import cat.institutmarianao.dao.CycleDao;
+import cat.institutmarianao.dao.ModuleDao;
+import cat.institutmarianao.dao.StudentDao;
 import cat.institutmarianao.model.Cycle;
 import cat.institutmarianao.model.Module;
-import cat.institutmarianao.service.CycleService;
-import cat.institutmarianao.service.ModuleService;
+import cat.institutmarianao.model.Student;
+import jakarta.ejb.EJB;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -18,8 +22,12 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = { "/register" })
 public class RegisterServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private CycleService cycle;
-	private ModuleService module;
+	@EJB
+	private CycleDao cycle;
+	@EJB
+	private ModuleDao module;
+	@EJB
+	private StudentDao student;
 
 	private List<Module> listaModulosEnBaseAlCiclo(String ciclorequest) throws Exception {
 		List<Cycle> listaDeCiclos = cycle.findAll();
@@ -40,14 +48,65 @@ public class RegisterServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		response.setContentType("text/html;charset=UTF-8");
-		String cicle = request.getParameter("cycle");
-		try {
-			List<Module> mismodulos = listaModulosEnBaseAlCiclo(cicle);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (request.isUserInRole("admin")) {
+			response.setContentType("text/html;charset=UTF-8");
+			String cicle = request.getParameter("cycle");
+			try {
+				List<Module> mismodulos = listaModulosEnBaseAlCiclo(cicle);
+				request.setAttribute("mismodulos", mismodulos);
+				request.setAttribute("ciclo", cicle);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			RequestDispatcher dispatcher = request.getRequestDispatcher("register.jsp");
+			dispatcher.forward(request, response);
 		}
-		RequestDispatcher dispatcher = request.getRequestDispatcher("register.jsp");
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException {
+
+		String dni = request.getParameter("dni");
+		String name = request.getParameter("name");
+		String surname = request.getParameter("surname");
+		String email = request.getParameter("email");
+
+		Student estudiante = new Student();
+		estudiante.setDni(dni);
+		estudiante.setName(surname);
+		estudiante.setSurname(surname);
+		estudiante.setEmail(email);
+		estudiante.setModules(null);
+
+		List<String> errors = validarStudent(estudiante);
+
+		RequestDispatcher dispatcher;
+		if (errors.isEmpty()) {
+			// Si pasa todas las validaciónes
+			dispatcher = request.getRequestDispatcher("/students");
+
+			try {
+				student.add(estudiante);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		} else {
+			// Si no pasa todas las validaciónes
+			dispatcher = request.getRequestDispatcher("register.jsp");
+			request.setAttribute("errors", errors);
+		}
+
 		dispatcher.forward(request, response);
+	}
+
+	private List<String> validarStudent(Student student) {
+		List<String> errores = new ArrayList<>();
+		if (student.getDni().isBlank()) {
+			errores.add("El camp dni esta vuit");
+		}
+		return errores;
 	}
 }

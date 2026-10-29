@@ -90,17 +90,11 @@
 
 		<ul class="list-inline">
 			
+			<c:forEach var="cycle" items="${ciclos}"> 
 				
-				<li class="list-inline-item"><a href="register?cycle=ASIX"
-					class="btn btn-light"> New ASIX register </a></li>
-			
-				
-				<li class="list-inline-item"><a href="register?cycle=DAW"
-					class="btn btn-light"> New DAW register </a></li>
-			
-				
-				<li class="list-inline-item"><a href="register?cycle=DAM"
-					class="btn btn-light"> New DAM register </a></li>
+				<li class="list-inline-item"><a href="register?cycle=${cycle.code}"
+					class="btn btn-light"> New ${cycle.code} register </a></li>
+			</c:forEach>
 			
 		</ul>
 
