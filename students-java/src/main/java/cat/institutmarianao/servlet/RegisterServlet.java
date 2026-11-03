@@ -1,6 +1,7 @@
 package cat.institutmarianao.servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -74,12 +75,20 @@ public class RegisterServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-
+		// recogida de datos
+		String cicle = request.getParameter("cycle");
 		String dni = request.getParameter("dni");
 		String name = request.getParameter("name");
 		String surname = request.getParameter("surname");
 		String email = request.getParameter("email");
-		String[] modulos = request.getParameterValues("modules");
+		String[] moduloCodes = request.getParameterValues("modules");
+		List<Module> modulos = new ArrayList<>();
+		for (int i = 0; i > moduloCodes.length; i++) {
+			try {
+				modulos.add(module.findByPk(moduloCodes[i], cicle));
+			} catch (Exception e) {
+			}
+		}
 
 		Student estudiante = new Student();
 		estudiante.setDni(dni);
@@ -88,10 +97,12 @@ public class RegisterServlet extends HttpServlet {
 		estudiante.setEmail(email);
 		estudiante.setModules(modulos);
 
+		postBean = new Student();
 		postBean.setDni(dni);
 		postBean.setName(name);
 		postBean.setSurname(surname);
 		postBean.setEmail(email);
+		postBean.setModules(modulos);
 
 		Set<ConstraintViolation<Student>> errors = validator.validate(postBean);
 

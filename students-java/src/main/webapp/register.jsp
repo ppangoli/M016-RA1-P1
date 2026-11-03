@@ -15,6 +15,15 @@
 		<jsp:include page="sections/header.jsp" />
 		<h2 class="mb-4">New ${ciclo} register</h2>
 </div>
+
+<div>
+<c:if test="${not empty errors}">
+<h1>Hay errores</h1>
+<c:forEach var="error" items="${errors}">
+<p><c:out value="${error.message}" escapeXml="false"/></p>
+</c:forEach>
+</c:if>
+</div>
 		<form action="register" method="POST">
 			<div class="row g-3">
 				<div class="col-md-6 col-lg-5">
@@ -51,7 +60,7 @@
 					<div class="input-group mb-3">
 						<span class="input-group-text"><i class="bi bi-mortarboard"></i></span>
 						<input id="cycle" type="text" class="form-control" name="cycle"
-							value="DAW" readonly>
+							value="${ciclo}" readonly>
 					</div>
 
 
