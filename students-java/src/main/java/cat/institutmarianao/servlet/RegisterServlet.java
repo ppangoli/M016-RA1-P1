@@ -83,10 +83,12 @@ public class RegisterServlet extends HttpServlet {
 		String email = request.getParameter("email");
 		String[] moduloCodes = request.getParameterValues("modules");
 		List<Module> modulos = new ArrayList<>();
-		for (int i = 0; i > moduloCodes.length; i++) {
-			try {
-				modulos.add(module.findByPk(moduloCodes[i], cicle));
-			} catch (Exception e) {
+		if (moduloCodes != null) {
+			for (int i = 0; i > moduloCodes.length; i++) {
+				try {
+					modulos.add(module.findByPk(moduloCodes[i], cicle));
+				} catch (Exception e) {
+				}
 			}
 		}
 
@@ -120,10 +122,12 @@ public class RegisterServlet extends HttpServlet {
 
 		} else {
 			// Si no pasa todas las validaciónes
-			dispatcher = request.getRequestDispatcher("register.jsp");
+			dispatcher = request.getRequestDispatcher("/register.jsp");
 			request.setAttribute("errors", errors);
+			request.setAttribute("cycle", cicle);
 		}
 
+		request.setAttribute("postBean", postBean);
 		dispatcher.forward(request, response);
 	}
 }
