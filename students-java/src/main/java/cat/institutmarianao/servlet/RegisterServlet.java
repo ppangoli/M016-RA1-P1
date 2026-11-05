@@ -60,6 +60,10 @@ public class RegisterServlet extends HttpServlet {
 		if (request.isUserInRole("admin")) {
 			response.setContentType("text/html;charset=UTF-8");
 			String cicle = request.getParameter("cycle");
+			if (cicle == null || cicle.isBlank()) {
+				Object attrCycle = request.getAttribute("cycle");
+				cicle = (attrCycle != null) ? attrCycle.toString() : "";
+			}
 			try {
 				List<Module> mismodulos = listaModulosEnBaseAlCiclo(cicle);
 				request.setAttribute("mismodulos", mismodulos);
@@ -75,59 +79,62 @@ public class RegisterServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		// recogida de datos
-		String cicle = request.getParameter("cycle");
-		String dni = request.getParameter("dni");
-		String name = request.getParameter("name");
-		String surname = request.getParameter("surname");
-		String email = request.getParameter("email");
-		String[] moduloCodes = request.getParameterValues("modules");
-		List<Module> modulos = new ArrayList<>();
-		if (moduloCodes != null) {
-			for (int i = 0; i > moduloCodes.length; i++) {
-				try {
-					modulos.add(module.findByPk(moduloCodes[i], cicle));
-				} catch (Exception e) {
+		if (request.isUserInRole("admin")) {
+			Student postBeanUnico = postBean;
+			// recogida de datos
+			String cicle = request.getParameter("cycle");
+			String dni = request.getParameter("dni");
+			String name = request.getParameter("name");
+			String surname = request.getParameter("surname");
+			String email = request.getParameter("email");
+			String[] moduloCodes = request.getParameterValues("modules");
+			List<Module> modulos = new ArrayList<>();
+			if (moduloCodes != null) {
+				for (int i = 0; i < moduloCodes.length; i++) {
+					try {
+						modulos.add(module.findByPk(moduloCodes[i], cicle));
+					} catch (Exception e) {
+					}
 				}
 			}
-		}
 
-		Student estudiante = new Student();
-		estudiante.setDni(dni);
-		estudiante.setName(name);
-		estudiante.setSurname(surname);
-		estudiante.setEmail(email);
-		estudiante.setModules(modulos);
+			Student estudiante = new Student();
+			estudiante.setDni(dni);
+			estudiante.setName(name);
+			estudiante.setSurname(surname);
+			estudiante.setEmail(email);
+			estudiante.setModules(modulos);
 
-		postBean = new Student();
-		postBean.setDni(dni);
-		postBean.setName(name);
-		postBean.setSurname(surname);
-		postBean.setEmail(email);
-		postBean.setModules(modulos);
+			postBeanUnico = new Student();
+			postBeanUnico.setDni(dni);
+			postBeanUnico.setName(name);
+			postBeanUnico.setSurname(surname);
+			postBeanUnico.setEmail(email);
+			postBeanUnico.setModules(modulos);
 
-		Set<ConstraintViolation<Student>> errors = validator.validate(postBean);
+			Set<ConstraintViolation<Student>> errors = validator.validate(postBeanUnico);
 
-		RequestDispatcher dispatcher;
-		if (errors.isEmpty()) {
-			// Si pasa todas las validaciónes
-			dispatcher = request.getRequestDispatcher("/students");
+			RequestDispatcher dispatcher;
+			if (errors.isEmpty()) {
+				// Si pasa todas las validaciónes
+				dispatcher = request.getRequestDispatcher("/students");
 
-			try {
-				student.add(estudiante);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				try {
+					student.add(estudiante);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			} else {
+				// Si no pasa todas las validaciónes
+				dispatcher = request.getRequestDispatcher("/register.jsp");
+				request.setAttribute("errors", errors);
+				request.setAttribute("cycle", cicle);
 			}
 
-		} else {
-			// Si no pasa todas las validaciónes
-			dispatcher = request.getRequestDispatcher("/register.jsp");
-			request.setAttribute("errors", errors);
-			request.setAttribute("cycle", cicle);
+			request.setAttribute("postBean", postBeanUnico);
+			dispatcher.forward(request, response);
 		}
-
-		request.setAttribute("postBean", postBean);
-		dispatcher.forward(request, response);
 	}
 }
