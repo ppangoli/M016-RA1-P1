@@ -123,6 +123,15 @@
             <td>${alumno.name}</td>
             <td>${alumno.surname}</td>
             <td>${alumno.email}</td>
+            <td>${alumno.cycle.code}</td>
+            <td>
+            <ul style="list-style-type: none; padding: 0; margin: 0;">
+            <c:forEach items="${alumno.modules}" var="modulo">
+           <li> ${modulo.code} - ${modulo.name}</li>
+            </c:forEach>
+            </ul>
+            </td>
+            <td><button href="/remove" data-bs-toggle="modal" data-bs-target="#confirmRemove">Remove</button></td>
         </tr>
     </c:forEach>
 </c:if>

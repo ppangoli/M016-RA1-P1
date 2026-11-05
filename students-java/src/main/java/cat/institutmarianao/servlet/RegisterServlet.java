@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import cat.institutmarianao.dao.CycleDao;
-import cat.institutmarianao.dao.ModuleDao;
-import cat.institutmarianao.dao.StudentDao;
 import cat.institutmarianao.model.Cycle;
 import cat.institutmarianao.model.Module;
 import cat.institutmarianao.model.Student;
+import cat.institutmarianao.service.CycleService;
+import cat.institutmarianao.service.ModuleService;
+import cat.institutmarianao.service.StudentService;
 import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
 import jakarta.servlet.RequestDispatcher;
@@ -27,19 +27,17 @@ import jakarta.validation.Validator;
 public class RegisterServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	@EJB
-	private CycleDao cycle;
+	private CycleService cycleService;
 	@EJB
-	private ModuleDao module;
+	private ModuleService moduleService;
 	@EJB
-	private StudentDao student;
+	private StudentService studentService;
 
 	@Resource
 	private Validator validator;
 
-	private Student postBean;
-
 	private List<Module> listaModulosEnBaseAlCiclo(String ciclorequest) throws Exception {
-		List<Cycle> listaDeCiclos = cycle.findAll();
+		List<Cycle> listaDeCiclos = cycleService.findAll();
 		Cycle cicloselect = null;
 		for (Cycle ciclo : listaDeCiclos) {
 			if (ciclorequest.equalsIgnoreCase(ciclo.getCode())) {
@@ -50,29 +48,32 @@ public class RegisterServlet extends HttpServlet {
 			}
 		}
 		// Lista con todos los modulos donde el codigo del ciclo es el de Asix
-		List<Module> mismodulos = module.findAllByCycleCode(cicloselect.getCode());
+		List<Module> mismodulos = moduleService.findAllByCycleCode(cicloselect.getCode());
 		return mismodulos;
 	}
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
 		if (request.isUserInRole("admin")) {
-			response.setContentType("text/html;charset=UTF-8");
-			String cicle = request.getParameter("cycle");
-			if (cicle == null || cicle.isBlank()) {
-				Object attrCycle = request.getAttribute("cycle");
-				cicle = (attrCycle != null) ? attrCycle.toString() : "";
-			}
 			try {
+				response.setContentType("text/html;charset=UTF-8");
+				String cicle = request.getParameter("cycle");
+				if (cicle == null || cicle.isBlank()) {
+					Object attrCycle = request.getAttribute("cycle");
+					cicle = (attrCycle != null) ? attrCycle.toString() : "";
+				}
+
 				List<Module> mismodulos = listaModulosEnBaseAlCiclo(cicle);
 				request.setAttribute("mismodulos", mismodulos);
 				request.setAttribute("ciclo", cicle);
+
+				RequestDispatcher dispatcher = request.getRequestDispatcher("register.jsp");
+				dispatcher.forward(request, response);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			RequestDispatcher dispatcher = request.getRequestDispatcher("register.jsp");
-			dispatcher.forward(request, response);
 		}
 	}
 
@@ -80,7 +81,6 @@ public class RegisterServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		if (request.isUserInRole("admin")) {
-			Student postBeanUnico = postBean;
 			// recogida de datos
 			String cicle = request.getParameter("cycle");
 			String dni = request.getParameter("dni");
@@ -92,7 +92,7 @@ public class RegisterServlet extends HttpServlet {
 			if (moduloCodes != null) {
 				for (int i = 0; i < moduloCodes.length; i++) {
 					try {
-						modulos.add(module.findByPk(moduloCodes[i], cicle));
+						modulos.add(moduleService.findByPk(moduloCodes[i], cicle));
 					} catch (Exception e) {
 					}
 				}
@@ -105,14 +105,7 @@ public class RegisterServlet extends HttpServlet {
 			estudiante.setEmail(email);
 			estudiante.setModules(modulos);
 
-			postBeanUnico = new Student();
-			postBeanUnico.setDni(dni);
-			postBeanUnico.setName(name);
-			postBeanUnico.setSurname(surname);
-			postBeanUnico.setEmail(email);
-			postBeanUnico.setModules(modulos);
-
-			Set<ConstraintViolation<Student>> errors = validator.validate(postBeanUnico);
+			Set<ConstraintViolation<Student>> errors = validator.validate(estudiante);
 
 			RequestDispatcher dispatcher;
 			if (errors.isEmpty()) {
@@ -120,7 +113,7 @@ public class RegisterServlet extends HttpServlet {
 				dispatcher = request.getRequestDispatcher("/students");
 
 				try {
-					student.add(estudiante);
+					studentService.add(estudiante);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -133,7 +126,7 @@ public class RegisterServlet extends HttpServlet {
 				request.setAttribute("cycle", cicle);
 			}
 
-			request.setAttribute("postBean", postBeanUnico);
+			request.setAttribute("estudiante", estudiante);
 			dispatcher.forward(request, response);
 		}
 	}

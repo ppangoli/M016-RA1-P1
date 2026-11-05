@@ -2,8 +2,8 @@ package cat.institutmarianao.servlet;
 
 import java.io.IOException;
 
-import cat.institutmarianao.dao.CycleDao;
-import cat.institutmarianao.dao.StudentDao;
+import cat.institutmarianao.service.CycleService;
+import cat.institutmarianao.service.StudentService;
 import jakarta.ejb.EJB;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -18,9 +18,9 @@ public class StudentsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@EJB
-	private CycleDao cycle;
+	private CycleService cycleService;
 	@EJB
-	private StudentDao student;
+	private StudentService studentService;
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -39,8 +39,8 @@ public class StudentsServlet extends HttpServlet {
 
 		if (request.isUserInRole("admin")) {
 			try {
-				request.setAttribute("listadealumnos", student.findAll());
-				request.setAttribute("ciclos", cycle.findAll());
+				request.setAttribute("listadealumnos", studentService.findAll());
+				request.setAttribute("ciclos", cycleService.findAll());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
