@@ -16,44 +16,48 @@
 		<h2 class="mb-4">New ${ciclo} register</h2>
 </div>
 
-<div>
+
 <c:if test="${not empty errors}">
-<h1>Hay errores</h1>
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 <c:forEach var="error" items="${errors}">
-<p style="color: red">
+<p class="mb-1">
+<strong>Nombre:</strong>
 <c:out value="${error.message}" escapeXml="false"/>
 </p>
+
 </c:forEach>
-</c:if>
 </div>
+</c:if>
+
 		<form action="register" method="POST">
 			<div class="row g-3">
 				<div class="col-md-6 col-lg-5">
 					<div class="input-group mb-3">
 						<span class="input-group-text"><i class="bi bi-card-heading"></i></span>
 						<input id="dni" type="text" class="form-control "
-							name="dni" placeholder="Dni" value="${postBean.dni}">
+							name="dni" placeholder="Dni" value="${estudiante.dni}">
 					</div>
 
 
 					<div class="input-group mb-3">
 						<span class="input-group-text"><i class="bi bi-person"></i></span>
 						<input id="name" type="text" class="form-control "
-							name="name" placeholder="Name" value="${postBean.name}">
+							name="name" placeholder="Name" value="${estudiante.name}">
 					</div>
 
 
 					<div class="input-group mb-3">
 						<span class="input-group-text"><i class="bi bi-person-fill"></i></span>
 						<input id="surname" type="text" class="form-control "
-							name="surname" placeholder="Surname" value="${postBean.surname}">
+							name="surname" placeholder="Surname" value="${estudiante.surname}">
 					</div>
 
 
 					<div class="input-group mb-3">
 						<span class="input-group-text"><i class="bi bi-envelope"></i></span>
 						<input id="email" type="text" class="form-control "
-							name="email" placeholder="Email" value="${postBean.email}">
+							name="email" placeholder="Email" value="${estudiante.email}">
 					</div>
 				</div>
 

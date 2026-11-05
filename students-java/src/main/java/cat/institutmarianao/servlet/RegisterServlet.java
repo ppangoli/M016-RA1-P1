@@ -123,7 +123,7 @@ public class RegisterServlet extends HttpServlet {
 				// Si no pasa todas las validaciónes
 				dispatcher = request.getRequestDispatcher("/register.jsp");
 				request.setAttribute("errors", errors);
-				request.setAttribute("cycle", cicle);
+				request.setAttribute("ciclo", cicle);
 			}
 
 			request.setAttribute("estudiante", estudiante);

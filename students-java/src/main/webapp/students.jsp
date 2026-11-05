@@ -51,7 +51,7 @@
 	</c:if></span></li>
 				</ul>
 				<ul class="navbar-nav">
-					<li class="nav-item"><a class="nav-link" href="/logout"
+					<li class="nav-item"><a class="nav-link" href="/students-java/logout"
 						data-bs-toggle="modal" data-bs-target="#confirmLogout"> <i
 							class="bi bi-box-arrow-right"></i> <span>Logout</span>
 					</a></li>
@@ -125,13 +125,16 @@
             <td>${alumno.email}</td>
             <td>${alumno.cycle.code}</td>
             <td>
-            <ul style="list-style-type: none; padding: 0; margin: 0;">
+            <ul class="list-unstyled mb-0 small">
             <c:forEach items="${alumno.modules}" var="modulo">
            <li> ${modulo.code} - ${modulo.name}</li>
             </c:forEach>
             </ul>
             </td>
-            <td><button href="/remove" data-bs-toggle="modal" data-bs-target="#confirmRemove">Remove</button></td>
+            <td><button type="button" class="btn btn-danger btn-sm"
+									data-bs-toggle="modal" data-bs-target="#confirmRemove"
+									onclick="changeDni('${alumno.dni}','remove?dni=${alumno.dni}')">
+									Remove</button></td>
         </tr>
     </c:forEach>
 </c:if>
