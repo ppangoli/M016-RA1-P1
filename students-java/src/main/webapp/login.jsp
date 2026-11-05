@@ -1,4 +1,5 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
 
 <!DOCTYPE html>
 <html>
@@ -27,10 +28,6 @@
 				</ul>
 			</div>
 		</nav>
-	
-	
-
-
 		<form action="j_security_check" method="post">
 			<div class="container g-2 mb-4">
 				<div class="row justify-content-center overflow-hidden">

@@ -106,7 +106,6 @@ public class RegisterServlet extends HttpServlet {
 			estudiante.setModules(modulos);
 
 			Set<ConstraintViolation<Student>> errors = validator.validate(estudiante);
-
 			RequestDispatcher dispatcher;
 			if (errors.isEmpty()) {
 				// Si pasa todas las validaciónes

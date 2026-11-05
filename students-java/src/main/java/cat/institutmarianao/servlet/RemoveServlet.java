@@ -19,8 +19,6 @@ public class RemoveServlet extends HttpServlet {
 	@EJB
 	private StudentService studentService;
 
-	// removeByDni(String dni);
-
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
