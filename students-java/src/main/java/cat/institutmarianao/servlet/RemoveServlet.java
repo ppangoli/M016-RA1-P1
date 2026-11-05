@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import cat.institutmarianao.service.StudentService;
 import jakarta.ejb.EJB;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -24,7 +25,16 @@ public class RemoveServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		if (request.isUserInRole("admin")) {
+			try {
+				String dni = request.getParameter("dni");
 
+				studentService.removeByDni(dni);
+				RequestDispatcher dispatcher;
+				dispatcher = request.getRequestDispatcher("/students");
+				dispatcher.forward(request, response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
