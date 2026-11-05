@@ -15,34 +15,45 @@
 		<jsp:include page="sections/header.jsp" />
 		<h2 class="mb-4">New ${ciclo} register</h2>
 </div>
+
+<div>
+<c:if test="${not empty errors}">
+<h1>Hay errores</h1>
+<c:forEach var="error" items="${errors}">
+<p style="color: red">
+<c:out value="${error.message}" escapeXml="false"/>
+</p>
+</c:forEach>
+</c:if>
+</div>
 		<form action="register" method="POST">
 			<div class="row g-3">
 				<div class="col-md-6 col-lg-5">
 					<div class="input-group mb-3">
 						<span class="input-group-text"><i class="bi bi-card-heading"></i></span>
 						<input id="dni" type="text" class="form-control "
-							name="dni" placeholder="Dni" value="">
+							name="dni" placeholder="Dni" value="${postBean.dni}">
 					</div>
 
 
 					<div class="input-group mb-3">
 						<span class="input-group-text"><i class="bi bi-person"></i></span>
 						<input id="name" type="text" class="form-control "
-							name="name" placeholder="Name" value="">
+							name="name" placeholder="Name" value="${postBean.name}">
 					</div>
 
 
 					<div class="input-group mb-3">
 						<span class="input-group-text"><i class="bi bi-person-fill"></i></span>
 						<input id="surname" type="text" class="form-control "
-							name="surname" placeholder="Surname" value="">
+							name="surname" placeholder="Surname" value="${postBean.surname}">
 					</div>
 
 
 					<div class="input-group mb-3">
 						<span class="input-group-text"><i class="bi bi-envelope"></i></span>
 						<input id="email" type="text" class="form-control "
-							name="email" placeholder="Email" value="">
+							name="email" placeholder="Email" value="${postBean.email}">
 					</div>
 				</div>
 
@@ -51,7 +62,7 @@
 					<div class="input-group mb-3">
 						<span class="input-group-text"><i class="bi bi-mortarboard"></i></span>
 						<input id="cycle" type="text" class="form-control" name="cycle"
-							value="DAW" readonly>
+							value="${ciclo}" readonly>
 					</div>
 
 
