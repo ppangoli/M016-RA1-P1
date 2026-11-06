@@ -123,6 +123,13 @@ public class RegisterServlet extends HttpServlet {
 				dispatcher = request.getRequestDispatcher("/register.jsp");
 				request.setAttribute("errors", errors);
 				request.setAttribute("ciclo", cicle);
+
+				try {
+					List<Module> mismodulos = listaModulosEnBaseAlCiclo(cicle);
+					request.setAttribute("mismodulos", mismodulos);
+				} catch (Exception e) {
+					throw new ServletException(e);
+				}
 			}
 
 			request.setAttribute("estudiante", estudiante);
