@@ -28,6 +28,7 @@
 				</ul>
 			</div>
 		</nav>
+				
 		<form action="j_security_check" method="post">
 			<div class="container g-2 mb-4">
 				<div class="row justify-content-center overflow-hidden">
@@ -40,7 +41,15 @@
 							</div>
 
 							<div class="card-body">
-								
+										<c:if test="${not empty error}">
+		   <div class="alert alert-danger alert-dismissible fade show" role="alert">
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			
+				<p class="mb-1">
+			  	The given credentials are wrong.
+				</p>
+			</div>
+		</c:if>
 								<div class="input-group py-1">
 									<span class="input-group-text"> <i
 										class="bi bi-person-fill"></i>
@@ -59,7 +68,7 @@
 							</div>
 							<div class="card-footer bg-secondary-subtle">
 								<input class="btn btn-light btn-outline-secondary col-12"
-									type="submit" value="Submit">
+									type="submit" value="Login">
 							</div>
 						</div>
 					</div>

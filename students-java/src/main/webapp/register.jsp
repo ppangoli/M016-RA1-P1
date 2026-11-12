@@ -22,7 +22,7 @@
 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 <c:forEach var="error" items="${errors}">
 <p class="mb-1">
-<strong>Nombre:</strong>
+<strong><c:out value="${error.propertyPath}" escapeXml="false"/>:</strong>
 <c:out value="${error.message}" escapeXml="false"/>
 </p>
 
@@ -77,7 +77,11 @@
 							<c:forEach var="modulo" items="${mismodulos}">
 							<div class="form-check">
 									<input class="form-check-input" type="checkbox" name="modules"
-										id="module_${modulo.code}" value="${modulo.code}"
+										id="module_${modulo.code}" value="${modulo.code}"  
+										<c:if test="${selectedModules.contains(modulo.code)}">
+										checked
+										</c:if>
+										
 										>
 									<label class="form-check-label" for="module_${modulo.code}">
 										${modulo.code} - ${modulo.name}

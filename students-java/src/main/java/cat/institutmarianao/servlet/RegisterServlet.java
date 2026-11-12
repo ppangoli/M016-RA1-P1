@@ -2,6 +2,7 @@ package cat.institutmarianao.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -104,8 +105,8 @@ public class RegisterServlet extends HttpServlet {
 			estudiante.setSurname(surname);
 			estudiante.setEmail(email);
 			estudiante.setModules(modulos);
-
 			Set<ConstraintViolation<Student>> errors = validator.validate(estudiante);
+
 			RequestDispatcher dispatcher;
 			if (errors.isEmpty()) {
 				// Si pasa todas las validaciónes
@@ -120,11 +121,17 @@ public class RegisterServlet extends HttpServlet {
 
 			} else {
 				// Si no pasa todas las validaciónes
-				dispatcher = request.getRequestDispatcher("/register.jsp");
-				request.setAttribute("errors", errors);
-				request.setAttribute("ciclo", cicle);
-
 				try {
+					dispatcher = request.getRequestDispatcher("/register.jsp");
+					request.setAttribute("errors", errors);
+					request.setAttribute("ciclo", cicle);
+					List<String> selectedModules = new ArrayList<>();
+
+					if (moduloCodes != null) {
+						selectedModules = Arrays.asList(moduloCodes);
+					}
+					request.setAttribute("selectedModules", selectedModules);
+
 					List<Module> mismodulos = listaModulosEnBaseAlCiclo(cicle);
 					request.setAttribute("mismodulos", mismodulos);
 				} catch (Exception e) {

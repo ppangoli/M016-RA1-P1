@@ -4,18 +4,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-
-
-
-
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-<script	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<title>Students</title>
-
+<jsp:include page="sections/head.jsp" />
 
 <script type="text/javascript">
 	function changeDni(dni, dniHref) {
@@ -29,36 +18,34 @@
 </head>
 <body>
 	<div class="container my-4">
-		
 
 
-<header class="mb-4 p-5 bg-secondary-subtle bg-gradient rounded">
-	<p class="display-1">
-		<strong>Students</strong>
-	</p>
-	<h3>By Institut Marianao</h3>
-</header>
+		<header class="mb-4 p-5 bg-secondary-subtle bg-gradient rounded">
+			<p class="display-1">
+				<strong>Students</strong>
+			</p>
+			<h3>By Institut Marianao</h3>
+		</header>
 
-
-	
-	
 		<nav
 			class="navbar navbar-expand-lg sticky-top mb-4 bg-secondary-subtle bg-gradient rounded">
 			<div class="container-fluid">
 				<ul class="navbar-nav">
-					<li class="navbar-brand"><i class="bi bi-person-fill"></i> <span><c:if test="${not empty pageContext.request.remoteUser}">
-		${pageContext.request.remoteUser}
-	</c:if></span></li>
+					<li class="navbar-brand"><i class="bi bi-person-fill"></i> <span>
+							<c:if test="${not empty pageContext.request.remoteUser}">
+							${pageContext.request.remoteUser}
+						</c:if>
+					</span></li>
 				</ul>
 				<ul class="navbar-nav">
-					<li class="nav-item"><a class="nav-link" href="/students-java/logout"
-						data-bs-toggle="modal" data-bs-target="#confirmLogout"> <i
+					<li class="nav-item"><a class="nav-link"
+						href="/students-java/logout" data-bs-toggle="modal"
+						data-bs-target="#confirmLogout"> <i
 							class="bi bi-box-arrow-right"></i> <span>Logout</span>
 					</a></li>
 				</ul>
 			</div>
 		</nav>
-
 
 		<!-- Confirm Logout Modal -->
 		<div class="modal fade" id="confirmLogout" tabindex="-1"
@@ -75,7 +62,7 @@
 						<p>Are you sure you wish to logout?</p>
 					</div>
 					<div class="modal-footer">
-						
+
 						<a class="btn btn-danger" href="/students-java/logout">Logout</a>
 						<button type="button" class="btn btn-secondary"
 							data-bs-dismiss="modal">Close</button>
@@ -83,19 +70,16 @@
 				</div>
 			</div>
 		</div>
-	
-
-
-
 
 		<ul class="list-inline">
-			
-			<c:forEach var="cycle" items="${ciclos}"> 
-				
-				<li class="list-inline-item"><a href="register?cycle=${cycle.code}"
-					class="btn btn-light"> New ${cycle.code} register </a></li>
+
+			<c:forEach var="cycle" items="${ciclos}">
+
+				<li class="list-inline-item"><a
+					href="register?cycle=${cycle.code}" class="btn btn-light"> New
+						${cycle.code} register </a></li>
 			</c:forEach>
-			
+
 		</ul>
 
 
@@ -115,33 +99,33 @@
 						<th>Modules</th>
 						<th>Actions</th>
 					</tr>
-					
- <c:if test="${not empty listadealumnos}">
-    <c:forEach items="${listadealumnos}" var="alumno">
-        <tr>
-            <td>${alumno.dni}</td>
-            <td>${alumno.name}</td>
-            <td>${alumno.surname}</td>
-            <td>${alumno.email}</td>
-            <td>${alumno.cycle.code}</td>
-            <td>
-            <ul class="list-unstyled mb-0 small">
-            <c:forEach items="${alumno.modules}" var="modulo">
-           <li> ${modulo.code} - ${modulo.name}</li>
-            </c:forEach>
-            </ul>
-            </td>
-            <td><button type="button" class="btn btn-danger btn-sm"
-									data-bs-toggle="modal" data-bs-target="#confirmRemove"
-									onclick="changeDni('${alumno.dni}','remove?dni=${alumno.dni}')">
-									Remove</button></td>
-        </tr>
-    </c:forEach>
-</c:if>
-					
+
+					<c:if test="${not empty listadealumnos}">
+						<c:forEach items="${listadealumnos}" var="alumno">
+							<tr>
+								<td>${alumno.dni}</td>
+								<td>${alumno.name}</td>
+								<td>${alumno.surname}</td>
+								<td>${alumno.email}</td>
+								<td>${alumno.cycle.code}</td>
+								<td>
+									<ul class="list-unstyled mb-0 small">
+										<c:forEach items="${alumno.modules}" var="modulo">
+											<li>${modulo.code}-${modulo.name}</li>
+										</c:forEach>
+									</ul>
+								</td>
+								<td><button type="button" class="btn btn-danger btn-sm"
+										data-bs-toggle="modal" data-bs-target="#confirmRemove"
+										onclick="changeDni('${alumno.dni}','remove?dni=${alumno.dni}')">
+										Remove</button></td>
+							</tr>
+						</c:forEach>
+					</c:if>
+
 				</thead>
 				<tbody>
-					
+
 				</tbody>
 			</table>
 		</div>
