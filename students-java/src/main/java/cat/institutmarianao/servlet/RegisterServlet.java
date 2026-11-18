@@ -37,22 +37,6 @@ public class RegisterServlet extends HttpServlet {
 	@Resource
 	private Validator validator;
 
-	private List<Module> listaModulosEnBaseAlCiclo(String ciclorequest) throws Exception {
-		List<Cycle> listaDeCiclos = cycleService.findAll();
-		Cycle cicloselect = null;
-		for (Cycle ciclo : listaDeCiclos) {
-			if (ciclorequest.equalsIgnoreCase(ciclo.getCode())) {
-				// Guardo los datos del ciclo seleccionado
-				cicloselect = new Cycle();
-				cicloselect.setCode(ciclo.getCode());
-				cicloselect.setName(ciclo.getName());
-			}
-		}
-		// Lista con todos los modulos donde el codigo del ciclo es el de Asix
-		List<Module> mismodulos = moduleService.findAllByCycleCode(cicloselect.getCode());
-		return mismodulos;
-	}
-
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -82,65 +66,91 @@ public class RegisterServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 		if (request.isUserInRole("admin")) {
-			// recogida de datos
-			String cicle = request.getParameter("cycle");
-			String dni = request.getParameter("dni");
-			String name = request.getParameter("name");
-			String surname = request.getParameter("surname");
-			String email = request.getParameter("email");
-			String[] moduloCodes = request.getParameterValues("modules");
-			List<Module> modulos = new ArrayList<>();
-			if (moduloCodes != null) {
-				for (int i = 0; i < moduloCodes.length; i++) {
-					try {
-						modulos.add(moduleService.findByPk(moduloCodes[i], cicle));
-					} catch (Exception e) {
-					}
-				}
-			}
 
-			Student estudiante = new Student();
-			estudiante.setDni(dni);
-			estudiante.setName(name);
-			estudiante.setSurname(surname);
-			estudiante.setEmail(email);
-			estudiante.setModules(modulos);
-			Set<ConstraintViolation<Student>> errors = validator.validate(estudiante);
+			Student estudiante = crearEstuidante(request); // recogida de datos
+
+			Set<ConstraintViolation<Student>> errors = validator.validate(estudiante); // Comprobacion de errores
 
 			RequestDispatcher dispatcher;
 			if (errors.isEmpty()) {
 				// Si pasa todas las validaciónes
 				dispatcher = request.getRequestDispatcher("/students");
+				
+				try {studentService.add(estudiante);} 
+				
+				catch (Exception e) {e.printStackTrace();}
 
-				try {
-					studentService.add(estudiante);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			} else { // Si no pasa todas las validaciónes
+				dispatcher = request.getRequestDispatcher("/register.jsp");
+				request = errorValidaciones(request, errors, estudiante);
 				}
-
-			} else {
-				// Si no pasa todas las validaciónes
-				try {
-					dispatcher = request.getRequestDispatcher("/register.jsp");
-					request.setAttribute("errors", errors);
-					request.setAttribute("ciclo", cicle);
-					List<String> selectedModules = new ArrayList<>();
-
-					if (moduloCodes != null) {
-						selectedModules = Arrays.asList(moduloCodes);
-					}
-					request.setAttribute("selectedModules", selectedModules);
-
-					List<Module> mismodulos = listaModulosEnBaseAlCiclo(cicle);
-					request.setAttribute("mismodulos", mismodulos);
-				} catch (Exception e) {
-					throw new ServletException(e);
-				}
-			}
-
-			request.setAttribute("estudiante", estudiante);
+			
+			// Envia tant si ha afegit l'estudiant com si no
 			dispatcher.forward(request, response);
 		}
+	}
+
+	private List<Module> listaModulosEnBaseAlCiclo(String ciclorequest) throws Exception {
+		List<Cycle> listaDeCiclos = cycleService.findAll();
+		Cycle cicloselect = null;
+		for (Cycle ciclo : listaDeCiclos) {
+			if (ciclorequest.equalsIgnoreCase(ciclo.getCode())) {
+				// Guardo los datos del ciclo seleccionado
+				cicloselect = new Cycle();
+				cicloselect.setCode(ciclo.getCode());
+				cicloselect.setName(ciclo.getName());
+			}
+		}
+		// Lista con todos los modulos donde el codigo del ciclo es el de Asix
+		List<Module> mismodulos = moduleService.findAllByCycleCode(cicloselect.getCode());
+		return mismodulos;
+	}
+
+	private HttpServletRequest errorValidaciones(HttpServletRequest request, Set<ConstraintViolation<Student>> errors,
+			Student estudiante) throws ServletException {
+		// Si no pasa todas las validaciónes
+		try {
+			request.setAttribute("errors", errors);
+			request.setAttribute("ciclo", request.getParameter("cycle"));
+			request.setAttribute("estudiante", estudiante);
+
+			List<Module> mismodulos = listaModulosEnBaseAlCiclo(request.getParameter("cycle"));
+			request.setAttribute("mismodulos", mismodulos);
+
+			List<String> selectedModules = new ArrayList<>();
+			if (request.getParameterValues("modules") != null) {
+				selectedModules = Arrays.asList(request.getParameterValues("modules"));
+			}
+			request.setAttribute("selectedModules", selectedModules);
+			return request;
+			
+		} catch (Exception e) {throw new ServletException(e);}
+	}
+
+	private Student crearEstuidante(HttpServletRequest request) {
+		String cicle = request.getParameter("cycle");
+		String dni = request.getParameter("dni");
+		String name = request.getParameter("name");
+		String surname = request.getParameter("surname");
+		String email = request.getParameter("email");
+		String[] moduloCodes = request.getParameterValues("modules");
+		List<Module> modulos = new ArrayList<>();
+		if (moduloCodes != null) {
+			for (int i = 0; i < moduloCodes.length; i++) {
+				try {
+					modulos.add(moduleService.findByPk(moduloCodes[i], cicle));
+				} catch (Exception e) {
+				}
+			}
+		}
+
+		Student estudiante = new Student();
+		estudiante.setDni(dni);
+		estudiante.setName(name);
+		estudiante.setSurname(surname);
+		estudiante.setEmail(email);
+		estudiante.setModules(modulos);
+
+		return estudiante;
 	}
 }

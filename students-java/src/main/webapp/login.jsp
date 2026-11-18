@@ -10,16 +10,16 @@
 
 <body class="m-4">
 	<div class="container">
-		
 
-<header class="mb-4 p-5 bg-secondary-subtle bg-gradient rounded">
-	<p class="display-1">
-		<strong>Students</strong>
-	</p>
-	<h3>By Institut Marianao</h3>
-</header>
 
-	
+		<header class="mb-4 p-5 bg-secondary-subtle bg-gradient rounded">
+			<p class="display-1">
+				<strong>Students</strong>
+			</p>
+			<h3>By Institut Marianao</h3>
+		</header>
+
+
 		<nav
 			class="navbar navbar-expand-lg sticky-top mb-4 bg-secondary-subtle bg-gradient rounded">
 			<div class="container-fluid">
@@ -28,7 +28,7 @@
 				</ul>
 			</div>
 		</nav>
-				
+
 		<form action="j_security_check" method="post">
 			<div class="container g-2 mb-4">
 				<div class="row justify-content-center overflow-hidden">
@@ -41,28 +41,26 @@
 							</div>
 
 							<div class="card-body">
-										<c:if test="${not empty error}">
-		   <div class="alert alert-danger alert-dismissible fade show" role="alert">
-				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-			
-				<p class="mb-1">
-			  	The given credentials are wrong.
-				</p>
-			</div>
-		</c:if>
+								<c:if test="${not empty error}">
+									<div class="alert alert-danger alert-dismissible fade show"
+										role="alert">
+										<button type="button" class="btn-close"
+											data-bs-dismiss="alert" aria-label="Close"></button>
+
+										<p class="mb-1">The given credentials are wrong.</p>
+									</div>
+								</c:if>
 								<div class="input-group py-1">
 									<span class="input-group-text"> <i
 										class="bi bi-person-fill"></i>
-									</span>
-									<input class="form-control" placeholder="Username"
+									</span> <input class="form-control" placeholder="Username"
 										name="j_username" type="text">
 								</div>
 
 								<div class="input-group py-1">
 									<span class="input-group-text"> <i
 										class="bi bi-key-fill"></i>
-									</span>
-									<input class="form-control" placeholder="Password"
+									</span> <input class="form-control" placeholder="Password"
 										name="j_password" type="password">
 								</div>
 							</div>
