@@ -41,24 +41,22 @@ public class RegisterServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		if (request.isUserInRole("admin")) {
-			try {
-				response.setContentType("text/html;charset=UTF-8");
-				String cicle = request.getParameter("cycle");
-				if (cicle == null || cicle.isBlank()) {
-					Object attrCycle = request.getAttribute("cycle");
-					cicle = (attrCycle != null) ? attrCycle.toString() : "";
-				}
-
-				List<Module> mismodulos = listaModulosEnBaseAlCiclo(cicle);
-				request.setAttribute("mismodulos", mismodulos);
-				request.setAttribute("ciclo", cicle);
-
-				RequestDispatcher dispatcher = request.getRequestDispatcher("register.jsp");
-				dispatcher.forward(request, response);
-			} catch (Exception e) {
-				e.printStackTrace();
+		try {
+			response.setContentType("text/html;charset=UTF-8");
+			String cicle = request.getParameter("cycle");
+			if (cicle == null || cicle.isBlank()) {
+				Object attrCycle = request.getAttribute("cycle");
+				cicle = (attrCycle != null) ? attrCycle.toString() : "";
 			}
+
+			List<Module> mismodulos = listaModulosEnBaseAlCiclo(cicle);
+			request.setAttribute("mismodulos", mismodulos);
+			request.setAttribute("ciclo", cicle);
+
+			RequestDispatcher dispatcher = request.getRequestDispatcher("register.jsp");
+			dispatcher.forward(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -72,19 +70,22 @@ public class RegisterServlet extends HttpServlet {
 			Set<ConstraintViolation<Student>> errors = validator.validate(estudiante); // Comprobacion de errores
 
 			RequestDispatcher dispatcher;
-			if (errors.isEmpty()) {
-				// Si pasa todas las validaciónes
+			if (errors.isEmpty()) { // Si pasa todas las validaciónes
 				dispatcher = request.getRequestDispatcher("/students");
-				
-				try {studentService.add(estudiante);} 
-				
-				catch (Exception e) {e.printStackTrace();}
+
+				try {
+					studentService.add(estudiante);
+				}
+
+				catch (Exception e) {
+					e.printStackTrace();
+				}
 
 			} else { // Si no pasa todas las validaciónes
 				dispatcher = request.getRequestDispatcher("/register.jsp");
 				request = errorValidaciones(request, errors, estudiante);
-				}
-			
+			}
+
 			// Envia tant si ha afegit l'estudiant com si no
 			dispatcher.forward(request, response);
 		}
@@ -123,8 +124,10 @@ public class RegisterServlet extends HttpServlet {
 			}
 			request.setAttribute("selectedModules", selectedModules);
 			return request;
-			
-		} catch (Exception e) {throw new ServletException(e);}
+
+		} catch (Exception e) {
+			throw new ServletException(e);
+		}
 	}
 
 	private Student crearEstuidante(HttpServletRequest request) {

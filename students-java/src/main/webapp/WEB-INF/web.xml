@@ -19,7 +19,7 @@
 		<web-resource-collection>
 			<web-resource-name>login</web-resource-name>
 			<description>Here we protect the /students path</description>
-			<url-pattern>/students</url-pattern>
+			<url-pattern>/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
 			<description>Qui te acces a students</description>

@@ -37,17 +37,15 @@ public class StudentsServlet extends HttpServlet {
 	private void student(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 
-		if (request.isUserInRole("admin")) {
-			try {
-				request.setAttribute("listadealumnos", studentService.findAll());
-				request.setAttribute("ciclos", cycleService.findAll());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			RequestDispatcher dispatcher = request.getRequestDispatcher("students.jsp");
-			dispatcher.forward(request, response);
+		try {
+			request.setAttribute("listadealumnos", studentService.findAll());
+			request.setAttribute("ciclos", cycleService.findAll());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
+		RequestDispatcher dispatcher = request.getRequestDispatcher("students.jsp");
+		dispatcher.forward(request, response);
 	}
 }
